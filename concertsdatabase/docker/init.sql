@@ -165,6 +165,7 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
+    api_key TEXT UNIQUE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -209,6 +210,8 @@ CREATE TABLE tokens (
 CREATE INDEX idx_tokens_user_id ON tokens(user_id);
 CREATE INDEX idx_tokens_token ON tokens(token);
 
+
+
 CREATE TABLE logs (
     id SERIAL PRIMARY KEY,
     client_id INT NOT NULL,
@@ -220,7 +223,7 @@ CREATE TABLE logs (
 
 CREATE TABLE data (
     id SERIAL PRIMARY KEY,
-    content TEXT NOT NULL
+    content TEXT NOT NULL  
 );
 
 -- -----------------------------

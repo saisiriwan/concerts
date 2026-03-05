@@ -8,4 +8,5 @@ type User struct {
 	Email     string    `db:"email" json:"email"`
 	CreatedAt time.Time `db:"created_at" json:"created_at"`
 	UpdatedAt time.Time `db:"updated_at" json:"updated_at"`
+	APIKey    string    `json:"api_key"`
 }

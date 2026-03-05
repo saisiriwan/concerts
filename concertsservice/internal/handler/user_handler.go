@@ -1,6 +1,10 @@
 package handler
 
 import (
+	"concerts/database"
+	"concerts/internal/models"
+	"crypto/rand"
+	"encoding/hex"
 	"net/http"
 	"strconv"
 
@@ -98,4 +102,28 @@ func (h *UserHandler) DeleteUser(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
+}
+
+func generateAPIKey() string {
+	bytes := make([]byte, 16)
+	rand.Read(bytes)
+	return hex.EncodeToString(bytes)
+}
+
+func RegisterClient(c *gin.Context) {
+	var users models.User
+	if err := c.ShouldBindJSON(&users); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		return
+	}
+
+	users.APIKey = generateAPIKey()
+
+	_, err := database.DB.Exec("INSERT INTO users (name, email, api_key) VALUES ($1, $2, $3)", users.Name, users.Email, users.APIKey)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not register client"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Client registered", "api_key": users.APIKey})
 }
